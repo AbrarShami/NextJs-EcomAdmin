@@ -37,15 +37,13 @@ export const ProductSchema = z.object({
     .min(1, { message: "Name field is required." })
     .max(100, { message: "Name can't be more than 100 characters" })
     .trim(),
-  quantity: string()
-    .min(1, { message: "Quantity field is required." })
-    .trim(),
+  quantity: z.coerce.number()
+    .min(1, { message: "Quantity field is required." }),
   available: string()
     .min(1, { message: "Please select availability" })
     .trim(),
-  price: string()
-    .min(1, { message: "Price field is required." })
-    .trim(),
+  price: z.coerce.number()
+    .min(1, { message: "Price field is required." }),
   description: string()
     .min(1, { message: "Description field is required." })
     .max(1000, { message: "Description can't be more than 1000 characters" })

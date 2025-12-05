@@ -1,8 +1,8 @@
-import { createPost } from "@/actions/products";
-import ProductForm from "../form/page";
+import { createProduct } from "@/actions/products";
+import ProductForm from "../form/ProductForm";
 
 export default async function create() {
   return (
-    <ProductForm handler={createPost} />
+    <ProductForm handler={createProduct} />
   );
 }

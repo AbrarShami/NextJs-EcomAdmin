@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createPost(state, formData) {
+export async function createProduct(state, formData) {
   // Check is user is signed in
     console.log("formDataCreate:", formData);
   const user = await getAuthUser();
@@ -15,11 +15,12 @@ export async function createPost(state, formData) {
 
   // Validate form fields
   const name = formData.get("name");
-  const quantity = formData.get("quantity");
+  const quantityRaw = formData.get("quantity");
   const available = formData.get("availability");
-  const price = formData.get("price");
+  const priceRaw = formData.get("price");
   const description = formData.get("description");
-
+  const quantity = Number(quantityRaw);
+  const price = Number(priceRaw);
   const validatedFields = ProductSchema.safeParse({
     name,
     quantity,
@@ -72,10 +73,12 @@ export async function updateProduct(state, formData) {
   const productId = formData.get("productId");
 
   const name = formData.get("name");
-  const quantity = formData.get("quantity");
+  const quantityRaw = formData.get("quantity");
   const available = formData.get("availability");
-  const price = formData.get("price");
+  const priceRaw = formData.get("price");
   const description = formData.get("description");
+  const quantity = Number(quantityRaw);
+  const price = Number(priceRaw);
 
   const validatedFields = ProductSchema.safeParse({
     name,

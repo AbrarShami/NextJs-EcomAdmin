@@ -1,5 +1,5 @@
 import { updateProduct } from "@/actions/products";
-import ProductForm from "../../form/page";
+import ProductForm from "../../form/ProductForm";
 import { getCollection } from "@/lib/db";
 import getAuthUser from "@/lib/getAuthUser";
 import { ObjectId } from "mongodb";
