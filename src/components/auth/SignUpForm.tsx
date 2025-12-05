@@ -42,8 +42,8 @@ export default function SignUpForm() {
                       name="name"
                       placeholder="Enter your name"
                     />
-                    {state?.errors?.name && (
-                      <p className="mt-2 text-sm text-error-500">{state.errors.name}</p>
+                    {state?.errors && 'name' in state.errors && state.errors.name && (
+                      <p className="mt-2 text-sm text-error-500 ss">{state.errors.name}</p>
                     )}
                   </div>
                   {/* <!-- Last Name --> */}
@@ -97,7 +97,7 @@ export default function SignUpForm() {
                       )}
                     </span>
                   </div>
-                  {state?.errors?.password && (
+                  {state?.errors && 'password' in state.errors && state?.errors?.password && (
                     <div className="mt-2 text-sm text-error-500">
                       <p>Password must:</p>
                       <ul className="list-disc list-inside ml-4">
@@ -130,7 +130,7 @@ export default function SignUpForm() {
                       )}
                     </span> */}
                   </div>
-                  {state?.errors?.confirmPassword && (
+                  {state?.errors && 'confirmPassword' in state.errors && state?.errors?.confirmPassword && (
                     <p className="mt-2 text-sm text-error-500">{state.errors.confirmPassword}</p>
                   )}
                 </div>

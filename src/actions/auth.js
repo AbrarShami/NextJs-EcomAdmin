@@ -23,11 +23,14 @@ export async function register(state, formData) {
     return {
       errors: validatedFields.error.flatten().fieldErrors, // fieldErrors is Record<string, string[]>
       email: String(formData.get("email") ?? ""),
+      name: String(formData.get("name") ?? ""),
+      password: String(formData.get("password") ?? ""),
+      confirmPassword: String(formData.get("confirmPassword") ?? ""),
     };
   }
 
   // Extract form fields
-  const { name, email, password } = validatedFields.data;
+  const { name, email, password, confirmPassword } = validatedFields.data;
 
   // Check if email is already registered
   const userCollection = await getCollection("users");
