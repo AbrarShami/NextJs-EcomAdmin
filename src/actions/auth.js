@@ -30,7 +30,7 @@ export async function register(state, formData) {
   }
 
   // Extract form fields
-  const { name, email, password, confirmPassword } = validatedFields.data;
+  const { name, email, password } = validatedFields.data;
 
   // Check if email is already registered
   const userCollection = await getCollection("users");
