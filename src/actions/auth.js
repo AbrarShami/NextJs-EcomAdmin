@@ -73,6 +73,7 @@ export async function login(state, formData) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       email: formData.get("email"),
+      password: formData.get("password"),
     };
   }
 
@@ -88,7 +89,7 @@ export async function login(state, formData) {
 
   // Check password
   const matchedPassword = await bcrypt.compare(password, existingUser.password);
-  if (!matchedPassword) return { errors: { email: "Invalid credentials." } };
+  if (!matchedPassword) return { errors: { password: "Invalid credentials." } };
 
   // Create a session
   await createSession(existingUser._id.toString());
