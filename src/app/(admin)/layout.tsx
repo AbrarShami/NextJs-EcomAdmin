@@ -8,12 +8,12 @@ import React from "react";
 
 interface AdminLayoutClientProps {
   children: React.ReactNode;
-  authUser: any;
+  authUser?: unknown | null;
 }
 
 export default function AdminLayout({ children, authUser }: AdminLayoutClientProps) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-
+  console.log("AdminLayout authUser:", authUser);
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
     ? "ml-0"
