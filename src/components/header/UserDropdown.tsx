@@ -4,8 +4,11 @@ import Image from "next/image";
 // import React, { useState } from "react";
 // import { Dropdown } from "../ui/dropdown/Dropdown";
 // import { DropdownItem } from "../ui/dropdown/DropdownItem";
-
-export default function UserDropdown() {
+type AuthUser = {
+  name?: string | null;
+  email?: string | null;
+};
+export default function UserDropdown({ authUser }: { authUser?: AuthUser }) {
   // const [isOpen, setIsOpen] = useState(false);
 
   // function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -16,6 +19,7 @@ export default function UserDropdown() {
   // function closeDropdown() {
   //   setIsOpen(false);
   // }
+  const displayName = (authUser?.name ?? "User").trim().split(" ")[0];
 
   return (
     <div className="relative">
@@ -32,7 +36,7 @@ export default function UserDropdown() {
           />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
+        <span className="block mr-1 font-medium text-theme-sm"> {displayName}</span>
       </div>
 
       {/* <Dropdown

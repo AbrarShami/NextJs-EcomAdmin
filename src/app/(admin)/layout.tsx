@@ -1,40 +1,29 @@
-"use client";
-
-import { useSidebar } from "@/context/SidebarContext";
-import AppHeader from "@/layout/AppHeader";
-import AppSidebar from "@/layout/AppSidebar";
-import Backdrop from "@/layout/Backdrop";
 import React from "react";
+import AdminLayoutClient from "./AdminLayoutClient";
+import getAuthUser from "@/lib/getAuthUser";
+import { getCollection } from "@/lib/db";
+import { redirect } from "next/navigation";
+import { ObjectId } from "mongodb";
 
-interface AdminLayoutClientProps {
-  children: React.ReactNode;
-  authUser?: unknown | null;
-}
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+    const authPayload = await getAuthUser();
+    if (!authPayload?.userId) {
+        redirect("/signin");
+    }
 
-export default function AdminLayout({ children, authUser }: AdminLayoutClientProps) {
-  const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  console.log("AdminLayout authUser:", authUser);
-  // Dynamic class for main content margin based on sidebar state
-  const mainContentMargin = isMobileOpen
-    ? "ml-0"
-    : isExpanded || isHovered
-      ? "lg:ml-[290px]"
-      : "lg:ml-[90px]";
+    const usersColl = await getCollection("users");
+    let userRecord = null;
+    try {
+        if (usersColl) {
+            userRecord = await usersColl.findOne({ _id: new ObjectId(authPayload.userId) });
+        }
+    } catch (err) {
+        console.error("Failed to load user record in AdminLayout:", err);
+    }
 
-  return (
-    <div className="min-h-screen xl:flex">
-      {/* Sidebar and Backdrop */}
-      <AppSidebar />
-      <Backdrop />
-      {/* Main Content Area */}
-      <div
-        className={`flex-1 transition-all  duration-300 ease-in-out ${mainContentMargin}`}
-      >
-        {/* Header */}
-        <AppHeader />
-        {/* Page Content */}
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}</div>
-      </div>
-    </div>
-  );
+    const authUser = userRecord
+        ? { name: userRecord.name ?? null, email: userRecord.email ?? null, userId: String(userRecord._id) }
+        : { userId: authPayload.userId };
+
+    return <AdminLayoutClient authUser={authUser}>{children}</AdminLayoutClient>;
 }

@@ -8,8 +8,8 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 // import { getCurrentUser } from "@/lib/getCurrentUser";
 
-
-const AppHeader: React.FC = () => {
+type AuthUser = { name?: string | null };
+const AppHeader: React.FC<{ authUser?: AuthUser }> = ({ authUser }) => {
 
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
@@ -171,7 +171,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown />
+          <UserDropdown authUser={authUser} />
 
         </div>
       </div>
