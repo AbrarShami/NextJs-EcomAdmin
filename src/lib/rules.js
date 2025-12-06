@@ -32,6 +32,9 @@ export const RegisterFormSchema = z
     }
   });
 
+const MAX_UPLOAD_SIZE = 1024 * 768 * 3; // 3MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
 export const ProductSchema = z.object({
   name: string()
     .min(1, { message: "Name field is required." })
@@ -48,4 +51,9 @@ export const ProductSchema = z.object({
     .min(1, { message: "Description field is required." })
     .max(1000, { message: "Description can't be more than 1000 characters" })
     .trim(),
+  image: z
+    .instanceof(File, { message: "Image is required." })
+    .refine((file) => file.size > 0, "Image is required.")
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, `File size must be less than ${MAX_UPLOAD_SIZE / (1024 * 1024)}MB.`)
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), "Only .jpg, .png, and .gif formats are supported."),
 });

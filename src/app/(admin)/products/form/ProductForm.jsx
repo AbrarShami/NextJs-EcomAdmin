@@ -8,7 +8,7 @@ export default function ProductForm({ handler, product, isEdit = false }) {
         <>
             <div className="container ">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName">{isEdit ? 'Edit Product' : 'Add Product'}</h2>
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName">{isEdit ? 'Edit Product' : 'Add Product'}</h2>
                 </div>
                 <div className="mx-auto max-w-(--breakpoint-2xl)">
                     <div>
@@ -115,18 +115,63 @@ export default function ProductForm({ handler, product, isEdit = false }) {
 
                                                 </div>
                                             </div>
-                                            <div class="col-span-full">
-                                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Description</label>
-                                                <div class="relative">
+                                            <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 ">
+                                                <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                                                    <h2 className="text-lg font-medium text-gray-800 dark:text-white">Products Images</h2>
+                                                </div>
+                                                <div className="p-4 sm:p-6">
+                                                    <label
+                                                        for="product-image"
+                                                        className="shadow-theme-xs group hover:border-brand-500 block cursor-pointer rounded-lg border-2 border-dashed border-gray-300 transition dark:hover:border-brand-400 dark:border-gray-800"
+                                                    ><div className="flex justify-center p-10">
+                                                            <div className="flex max-w-[260px] flex-col items-center gap-4">
+                                                                <div
+                                                                    className="inline-flex h-13 w-13 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition dark:border-gray-800 dark:text-gray-400"
+                                                                >
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        width="24"
+                                                                        height="24"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                    >
+                                                                        <path
+                                                                            d="M20.0004 16V18.5C20.0004 19.3284 19.3288 20 18.5004 20H5.49951C4.67108 20 3.99951 19.3284 3.99951 18.5V16M12.0015 4L12.0015 16M7.37454 8.6246L11.9994 4.00269L16.6245 8.6246"
+                                                                            stroke="currentColor"
+                                                                            stroke-width="1.5"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                        ></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+                                                                    <span className="font-medium text-gray-800 dark:text-white/90">Click to upload</span>or
+                                                                    drag and drop SVG, PNG, JPG or GIF (MAX. 1024x768px)
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <input id="product-image" className="hidden" name="image" type="file"
+                                                        /></label>
+                                                    {state?.errors?.image.map((error, key) => {
+                                                        return <p key={key} className="mt-2 text-sm text-error-500">{error}</p>;
+                                                    })}
+
+                                                </div>
+                                            </div>
+                                            <div className="col-span-full">
+                                                <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Description</label>
+                                                <div className="relative">
                                                     <textarea
                                                         name="description"
-                                                        placeholder="Receipt Info (optional)"
+                                                        placeholder="Receipt Info"
                                                         rows="6"
-                                                        class="w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden bg-transparent text-gray-900 dark:text-gray-300 text-gray-900 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800"
+                                                        className="w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden bg-transparent text-gray-900 dark:text-gray-300 text-gray-900 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800"
                                                         spellcheck="false"
                                                         defaultValue={state?.description || product?.description}
 
                                                     ></textarea>
+                                                    {state?.errors?.price && <p className="mt-2 text-sm text-error-500">{state.errors.description}</p>}
+
                                                 </div>
                                             </div>
                                             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
@@ -147,8 +192,6 @@ export default function ProductForm({ handler, product, isEdit = false }) {
                         </div>
                     </div>
                 </div>
-
-                {/* <BlogForm handler={createProduct}/> */}
             </div>
         </>
     )

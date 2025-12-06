@@ -19,14 +19,18 @@ export async function createProduct(state, formData) {
   const available = formData.get("availability");
   const priceRaw = formData.get("price");
   const description = formData.get("description");
+  const image = formData.get("image");
+
   const quantity = Number(quantityRaw);
   const price = Number(priceRaw);
-  const validatedFields = ProductSchema.safeParse({
+
+  const validatedFields = await ProductSchema.safeParse({
     name,
     quantity,
     available,
     price,
-    description
+    description,
+    image
   });
 
   // If any form fields are invalid
@@ -37,7 +41,8 @@ export async function createProduct(state, formData) {
       quantity,
       available,
       price,
-      description
+      description,
+      image
     };
   }
 
