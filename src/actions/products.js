@@ -48,6 +48,10 @@ export async function createProduct(state, formData) {
 
   // Save the new post in DB
   try {
+    const imageBuffer = await image.arrayBuffer();
+    const imageBase64 = Buffer.from(imageBuffer).toString("base64");
+    const imageDataUrl = `data:${image.type};base64,${imageBase64}`;
+
     const postsCollection = await getCollection("products");
     const post = {
       name: validatedFields.data.name,
@@ -55,7 +59,10 @@ export async function createProduct(state, formData) {
       available: validatedFields.data.available,
       price: validatedFields.data.price,
       description: validatedFields.data.description,
+      image: imageDataUrl, // Store base64 image
+      imageType: image.type,
       userId: ObjectId.createFromHexString(user.userId),
+      createdAt: new Date(),
     };
     await postsCollection.insertOne(post);
   } catch (error) {
