@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
         )}
         <div>
           <h2 className="block text-xl font-semibold">
-            Name: {product.name}
+            {product.name}
             <span className="ml-4">
               <Badge
                 className="mt-4"
