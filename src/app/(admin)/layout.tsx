@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     const authPayload = await getAuthUser();
-    if (!authPayload?.userId) {
+    if (!authPayload?.userId || typeof authPayload.userId !== "string" || authPayload.userId.length !== 24) {
         redirect("/signin");
     }
 
