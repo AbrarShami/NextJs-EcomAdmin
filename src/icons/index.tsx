@@ -20,6 +20,7 @@ import GroupIcon from "./group.svg";
 import ProductIcon from "./new-product.png";
 import InStock from "./in-stock.png";
 import OutofStock from "./outofstock.png";
+import LowStock from "./chart.png";
 import BoxIconLine from "./box-line.svg";
 import ShootingStarIcon from "./shooting-star.svg";
 import DollarLineIcon from "./dollar-line.svg";
@@ -80,6 +81,7 @@ export {
   GroupIcon,
   InStock,
   OutofStock,
+  LowStock,
   ProductIcon,
   BoxIconLine,
   ShootingStarIcon,

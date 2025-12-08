@@ -8,7 +8,25 @@ export default function ProductCard({ product }) {
         {post._id.getTimestamp().toLocaleString()}
       </p> */}
       <div className="flex items-center justify-around mb-4 h-48 relative">
-        {product.image && (<Image src={product.image} alt={product.name} width={300} height={200} style={{ width: "250px" }} className="w-full h-48 object-cover rounded-md" />)}
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            width={300}
+            height={200}
+            style={{ width: "250px" }}
+            className="w-full h-48 object-cover rounded-md"
+          />
+        ) : (
+          <Image
+            src="/images/product/product-placeholder.jpg"
+            alt={product.name}
+            width={300}
+            height={200}
+            style={{ width: "250px" }}
+            className="w-full h-48 object-cover rounded-md border-[1.5px]"
+          />
+        )}
         <div>
           <h2 className="block text-xl font-semibold">
             Name: {product.name}

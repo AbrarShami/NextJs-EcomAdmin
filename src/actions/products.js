@@ -89,6 +89,8 @@ export async function updateProduct(state, formData) {
   const available = formData.get("availability");
   const priceRaw = formData.get("price");
   const description = formData.get("description");
+  const image = formData.get("image");
+
   const quantity = Number(quantityRaw);
   const price = Number(priceRaw);
 
@@ -97,7 +99,8 @@ export async function updateProduct(state, formData) {
     quantity,
     available,
     price,
-    description
+    description,
+    image
   });
 
   // If any form fields are invalid
@@ -108,7 +111,8 @@ export async function updateProduct(state, formData) {
       quantity,
       available,
       price,
-      description
+      description,
+      image
     };
   }
 
@@ -120,7 +124,9 @@ export async function updateProduct(state, formData) {
 
   // Check the user owns the products
   if (user.userId !== product.userId.toString()) return redirect("/");
-
+    const imageBuffer = await image.arrayBuffer();
+    const imageBase64 = Buffer.from(imageBuffer).toString("base64");
+    const imageDataUrl = `data:${image.type};base64,${imageBase64}`;
   // Update the product in DB
   productCollection.findOneAndUpdate(
     { _id: product._id },
@@ -131,6 +137,8 @@ export async function updateProduct(state, formData) {
         available: validatedFields.data.available,
         price: validatedFields.data.price,
         description: validatedFields.data.description,
+        image: imageDataUrl, // Store base64 image
+        imageType: image.type,
       },
     }
   );

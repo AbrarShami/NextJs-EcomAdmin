@@ -151,6 +151,7 @@ export default async function RecentOrders() {
                         alt={product.name}
                       />
                     </div> */}
+                    {product.image ? (<Image src={product.image} alt={product.name} width={300} height={200} style={{ width: "40px" }} />) : (<Image src="/images/product/product-placeholder.jpg" alt={product.name} width={300} height={200} style={{ width: "40px" }} className="border-[1.5px]" />)}
                     <div>
                       <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                         {product.name}
