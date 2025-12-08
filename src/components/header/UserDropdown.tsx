@@ -31,7 +31,7 @@ export default function UserDropdown({ authUser }: { authUser?: AuthUser }) {
           <Image
             width={44}
             height={44}
-            src="/images/user/user.png"
+            src="/images/user/847.jpg"
             alt="User"
           />
         </span>
