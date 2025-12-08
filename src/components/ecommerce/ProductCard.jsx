@@ -7,15 +7,15 @@ export default function ProductCard({ product }) {
       {/* <p className="text-slate-600 text-xs">
         {post._id.getTimestamp().toLocaleString()}
       </p> */}
-      <div className="flex items-center justify-around mb-4 h-48 relative">
+      <div className="flex items-center justify-around mb-4  relative">
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             width={300}
-            height={200}
-            style={{ width: "250px" }}
-            className="w-full h-48 object-cover rounded-md"
+            height={400}
+            style={{ width: "230px", height: "275px", objectFit: "cover" }}
+            className="w-full object-cover rounded-md"
           />
         ) : (
           <Image
@@ -23,8 +23,8 @@ export default function ProductCard({ product }) {
             alt={product.name}
             width={300}
             height={200}
-            style={{ width: "250px" }}
-            className="w-full h-48 object-cover rounded-md border-[1.5px]"
+            style={{ width: "230px", }}
+            className="w-full  object-cover rounded-md border-[1.5px]"
           />
         )}
         <div>

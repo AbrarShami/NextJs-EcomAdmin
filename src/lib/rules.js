@@ -32,7 +32,7 @@ export const RegisterFormSchema = z
     }
   });
 
-const MAX_UPLOAD_SIZE = 1024 * 768 * 3; // 3MB
+const MAX_UPLOAD_SIZE =  768 * 1024 * 3; // 3MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export const ProductSchema = z.object({
@@ -54,6 +54,6 @@ export const ProductSchema = z.object({
   image: z
     .instanceof(File, { message: "Image is required." })
     .refine((file) => file.size > 0, "Image is required.")
-    .refine((file) => file.size <= MAX_UPLOAD_SIZE, `File size must be less than ${MAX_UPLOAD_SIZE / (1024 * 1024)}MB.`)
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, `File size must be less than ${MAX_UPLOAD_SIZE / (768 * 1024)}MB.`)
     .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), "Only .jpg, .png, and .gif formats are supported."),
 });

@@ -8,12 +8,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createProduct(state, formData) {
-  // Check is user is signed in
-    console.log("formDataCreate:", formData);
+  console.log("formDataCreate:", formData);
   const user = await getAuthUser();
   if (!user) return redirect("/");
 
-  // Validate form fields
   const name = formData.get("name");
   const quantityRaw = formData.get("quantity");
   const available = formData.get("availability");
@@ -24,66 +22,61 @@ export async function createProduct(state, formData) {
   const quantity = Number(quantityRaw);
   const price = Number(priceRaw);
 
-  const validatedFields = await ProductSchema.safeParse({
-    name,
-    quantity,
-    available,
-    price,
-    description,
-    image
-  });
-
-  // If any form fields are invalid
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
+  try {
+    const validatedFields = await ProductSchema.parseAsync({
       name,
       quantity,
       available,
       price,
       description,
       image
-    };
-  }
+    });
 
-  // Save the new post in DB
-  try {
     const imageBuffer = await image.arrayBuffer();
     const imageBase64 = Buffer.from(imageBuffer).toString("base64");
     const imageDataUrl = `data:${image.type};base64,${imageBase64}`;
 
     const postsCollection = await getCollection("products");
     const post = {
-      name: validatedFields.data.name,
-      quantity: validatedFields.data.quantity,
-      available: validatedFields.data.available,
-      price: validatedFields.data.price,
-      description: validatedFields.data.description,
-      image: imageDataUrl, // Store base64 image
+      name: validatedFields.name,
+      quantity: validatedFields.quantity,
+      available: validatedFields.available,
+      price: validatedFields.price,
+      description: validatedFields.description,
+      image: imageDataUrl,
       imageType: image.type,
+      imageName: image.name ?? null,
       userId: ObjectId.createFromHexString(user.userId),
       createdAt: new Date(),
     };
     await postsCollection.insertOne(post);
   } catch (error) {
+    console.error("Create product error:", error);
+    if (error?.name === "ZodError") {
+      return {
+        errors: error.flatten().fieldErrors,
+        name,
+        quantity,
+        available,
+        price,
+        description,
+      };
+    }
     return {
-      errors: { title: error.message },
+      errors: { general: error.message },
     };
   }
 
-  // Redirect
+  revalidatePath("/");
   redirect("/");
 }
 
 export async function updateProduct(state, formData) {
-  // Check is user is signed in
   console.log("formData:", formData);
   const user = await getAuthUser();
   if (!user) return redirect("/");
 
-  // Validate form fields
   const productId = formData.get("productId");
-
   const name = formData.get("name");
   const quantityRaw = formData.get("quantity");
   const available = formData.get("availability");
@@ -94,75 +87,88 @@ export async function updateProduct(state, formData) {
   const quantity = Number(quantityRaw);
   const price = Number(priceRaw);
 
-  const validatedFields = ProductSchema.safeParse({
-    name,
-    quantity,
-    available,
-    price,
-    description,
-    image
-  });
-
-  // If any form fields are invalid
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
+  try {
+    // Validate core fields (without image) - image is optional on edit
+    const coreValidated = await ProductSchema.omit({ image: true }).parseAsync({
       name,
       quantity,
       available,
       price,
       description,
-      image
+    });
+
+    const productCollection = await getCollection("products");
+    const product = await productCollection.findOne({
+      _id: ObjectId.createFromHexString(productId),
+    });
+
+    if (!product) {
+      return { errors: { general: "Product not found." } };
+    }
+
+    if (user.userId !== product.userId.toString()) return redirect("/");
+
+    const updatePayload = {
+      name: coreValidated.name,
+      quantity: coreValidated.quantity,
+      available: coreValidated.available,
+      price: coreValidated.price,
+      description: coreValidated.description,
+      updatedAt: new Date(),
+    };
+
+    // Only process image if a new file was uploaded (size > 0)
+    if (image && typeof image === "object" && image.size > 0) {
+      // Validate only the image field
+      await ProductSchema.pick({ image: true }).parseAsync({ image });
+
+      const imageBuffer = await image.arrayBuffer();
+      const imageBase64 = Buffer.from(imageBuffer).toString("base64");
+      const imageDataUrl = `data:${image.type};base64,${imageBase64}`;
+
+      updatePayload.image = imageDataUrl;
+      updatePayload.imageType = image.type;
+      updatePayload.imageName = image.name ?? null;
+    }
+
+    await productCollection.findOneAndUpdate(
+      { _id: product._id },
+      { $set: updatePayload }
+    );
+
+  } catch (error) {
+    console.error("Update product error:", error);
+    if (error?.name === "ZodError") {
+      return {
+        errors: error.flatten().fieldErrors,
+        name,
+        quantity,
+        available,
+        price,
+        description,
+      };
+    }
+    return {
+      errors: { general: error.message },
     };
   }
 
-  // Find the products
-  const productCollection = await getCollection("products");
-  const product = await productCollection.findOne({
-    _id: ObjectId.createFromHexString(productId),
-  });
-
-  // Check the user owns the products
-  if (user.userId !== product.userId.toString()) return redirect("/");
-    const imageBuffer = await image.arrayBuffer();
-    const imageBase64 = Buffer.from(imageBuffer).toString("base64");
-    const imageDataUrl = `data:${image.type};base64,${imageBase64}`;
-  // Update the product in DB
-  productCollection.findOneAndUpdate(
-    { _id: product._id },
-    {
-      $set: {
-        name: validatedFields.data.name,
-        quantity: validatedFields.data.quantity,
-        available: validatedFields.data.available,
-        price: validatedFields.data.price,
-        description: validatedFields.data.description,
-        image: imageDataUrl, // Store base64 image
-        imageType: image.type,
-      },
-    }
-  );
-
-  // Redirect
-  redirect("/");
+  revalidatePath("/products");
+  redirect("/products");
 }
 
 export async function deleteProduct(formData) {
-  // Check is user is signed in
   const user = await getAuthUser();
   if (!user) return redirect("/");
 
-  // Find the post
   const productsCollection = await getCollection("products");
   const product = await productsCollection.findOne({
     _id: ObjectId.createFromHexString(formData.get("productId")),
   });
 
-  // Check the auth user owns the post
   if (user.userId !== product.userId.toString()) return redirect("/");
 
-  // Delete the post
-  productsCollection.findOneAndDelete({ _id: product._id });
+  await productsCollection.findOneAndDelete({ _id: product._id });
 
-  revalidatePath('/')
+  revalidatePath("/products");
 }

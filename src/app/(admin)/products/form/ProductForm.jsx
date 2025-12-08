@@ -1,28 +1,56 @@
 "use client";
-import { useActionState, useState, useRef } from "react";
+
+import { useActionState, useState, useRef, useEffect } from "react";
 
 export default function ProductForm({ handler, product, isEdit = false }) {
     const [state, action, isPending] = useActionState(handler, undefined);
-    const [fileName, setFileName] = useState(null);
+
+    // Initialize with saved filename / preview from DB when editing
+    const [fileName, setFileName] = useState(product?.imageName ?? null);
+    const [previewUrl, setPreviewUrl] = useState(product?.image ?? null);
+
     const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        // update if product prop changes (e.g., navigation / SSR -> client hydrate)
+        setFileName(product?.imageName ?? null);
+        setPreviewUrl(product?.image ?? null);
+    }, [product]);
 
     const showName = (event) => {
         const files = event.target.files;
         if (files && files.length > 0) {
             const file = files[0];
             setFileName(file.name);
+            // create preview for newly selected file
+            try {
+                const objectUrl = URL.createObjectURL(file);
+                setPreviewUrl(objectUrl);
+            } catch {
+                setPreviewUrl(null);
+            }
         } else {
             setFileName(null);
+            setPreviewUrl(product?.image ?? null);
         }
     };
+
     const clearFile = (e) => {
         e.preventDefault();
         setFileName(null);
+        setPreviewUrl(product?.image ?? null);
         const input = fileInputRef.current || document.getElementById('product-image');
         if (input) {
             input.value = ''; // allowed: empty string only
         }
     };
+    const inlineStyle = {
+        padding: 0,
+        right: '4px',
+        fontSize: '20px',
+        top: '5px',
+        lineHeight: '10px',
+    }
     return (
         <>
             <div className="container ">
@@ -190,26 +218,28 @@ export default function ProductForm({ handler, product, isEdit = false }) {
 
                                                                     <p className="text-center text-sm text-gray-500 dark:text-gray-400">
                                                                         <span className="font-medium text-gray-800 dark:text-white/90">Click to upload </span> or
-                                                                        drag and drop SVG, PNG, JPG or GIF (MAX. 1024x768px)
+                                                                        drag and drop SVG, PNG, JPG or GIF (MAX.768 x 1024px)
                                                                     </p>
-                                                                    <div className="mt-6 p-4 border border-indigo-200 bg-indigo-50 rounded-lg shadow-inner">
-                                                                        {fileName ? (
-                                                                            <div className="flex items-center justify-between">
-                                                                                <span className="text-indigo-800 font-medium truncate flex items-center" style={{ maxWidth: "400px" }}>
-
-                                                                                    Selected File: {fileName}
-                                                                                </span>
+                                                                    <div className="mt-6 relative p-4 border border-indigo-200 bg-indigo-50 rounded-lg shadow-inner">
+                                                                        {previewUrl ? (
+                                                                            <div className="">
+                                                                                <img src={previewUrl} alt={product?.name ?? "Product image"} className="max-w-[200px] max-h-[150px] object-contain rounded" />
+                                                                                {!fileName && product?.imageName && (
+                                                                                    <div className="text-sm text-gray-600 mt-1">Saved file: {product.imageName}</div>
+                                                                                )}
                                                                                 <button
                                                                                     onClick={clearFile}
-                                                                                    className="text-sm text-red-600 hover:text-red-800 font-medium transition-colors ml-4 p-1 rounded-full hover:bg-indigo-100"
+                                                                                    className="absolute font-medium hover:text-red-800 pad rounded-full text-red-600 top-0 transition-colors"
                                                                                     aria-label="Remove file"
+                                                                                    style={inlineStyle}
                                                                                 >
                                                                                     &times;
                                                                                 </button>
                                                                             </div>
                                                                         ) : (
-                                                                            <p className="text-gray-500 italic text-sm">No file currently selected.</p>
+                                                                            <p className="text-gray-500 italic text-sm">No image currently selected.</p>
                                                                         )}
+
                                                                     </div>
                                                                 </div>
                                                             </div>

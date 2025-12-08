@@ -11,6 +11,7 @@ import { getCollection } from "@/lib/db";
 import getAuthUser from "@/lib/getAuthUser";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
+import Image from "next/image"
 
 export default async function Dashboard() {
     const user = await getAuthUser();
@@ -70,6 +71,7 @@ export default async function Dashboard() {
                             <TableRow key={product._id.toString()} className="">
                                 <TableCell className="py-3">
                                     <div className="flex items-center gap-3">
+                                        {product.image ? (<Image src={product.image} alt={product.name} width={300} height={200} style={{ width: "40px" }} />) : (<Image src="/images/product/product-placeholder.jpg" alt={product.name} width={200} height={200} style={{ width: "40px" }} className="border-[1.5px]" />)}
                                         <div>
                                             <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                                                 {product.name}
