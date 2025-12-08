@@ -11,7 +11,7 @@ export default async function middleware(req) {
   protectedRoutes.includes(path) || path.startsWith("/products/edit/");
   const isPublic = publicRoutes.includes(path);
 
-  // 🌟 Read session cookie correctly in middleware
+  // Read session cookie correctly in middleware
   const session = req.cookies.get("session")?.value;
   const user = await getAuthUser(session);
   const userId = user?.userId;
