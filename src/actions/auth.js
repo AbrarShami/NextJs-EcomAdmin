@@ -85,5 +85,5 @@ export async function login(state, formData) {
 export async function logout() {
   const cookieStore = await cookies(); // Add await here
   cookieStore.delete("session");
-  redirect("/signin");
+  redirect("/landing-page");
 }

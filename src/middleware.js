@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import getAuthUser from "./lib/getAuthUser";
 
 const protectedRoutes = ["/", "/products/create", "/products/form", "/products"];
-const publicRoutes = ["/signin", "/signup"];
+const publicRoutes = ["/signin", "/signup", "/landing-page"];
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
@@ -23,7 +23,7 @@ export default async function middleware(req) {
 
   // Redirect unauthenticated user away from protected routes
   if (isProtected && !userId) {
-    return NextResponse.redirect(new URL("/signin", req.nextUrl));
+    return NextResponse.redirect(new URL("/landing-page", req.nextUrl));
   }
 
   return NextResponse.next();
