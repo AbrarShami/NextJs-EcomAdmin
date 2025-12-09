@@ -1,7 +1,7 @@
-import CSSProvider from "./components/CSSProvider";
-import Footer from "./components/Footer/Footer";
-import Navbar from "./components/Navbar/index";
-import "./components/globals.css";
+import CSSProvider from "../landing-page/components/CSSProvider";
+import Footer from "../landing-page/components/Footer/Footer";
+import Navbar from "../landing-page/components/Navbar/index";
+import "../landing-page/components/globals.css";
 
 export const metadata = {
     title: "Nextjs Admin Dashboard Template",
@@ -16,9 +16,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <CSSProvider />
+
                 <Navbar />
                 {children}
+                <h1>Footer</h1>
                 <Footer />
             </body>
         </html>

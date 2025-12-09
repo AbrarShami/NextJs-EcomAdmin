@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import getAuthUser from "./lib/getAuthUser";
 
 const protectedRoutes = ["/", "/products/create", "/products/form", "/products"];
-const publicRoutes = ["/signin", "/signup", "/landing-page"];
+const publicRoutes = ["/signin", "/signup", "/landing-page","/shop"];
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
