@@ -35,7 +35,6 @@ export default async function Products() {
                                 )}
                                 <span className="mt-4 inline-block">
                                     <Badge
-                                        className="mt-4"
                                         size="sm"
                                         color={
                                             product.available === "yes"
