@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function CSSProvider() {
   useEffect(() => {
-    const basePath = process.env.NODE_ENV === "production" ? "/dSign" : "";
+    const basePath = process.env.NODE_ENV === "production" ? "" : "";
 
     // Set CSS custom properties for background images
     document.documentElement.style.setProperty(
